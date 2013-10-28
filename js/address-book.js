@@ -1,7 +1,46 @@
-/* address-book.js
-    this is where you will add your JavaScript to complete Lab 5
-*/
+$(function() {
+    sortObjArray(Employees.entries, "last");
+    render(Employees.entries);
 
+    $(".sort-ui .btn").click(function() {
+        var sortBtn = $(this);
+        var sortBy = sortBtn.attr('data-sortby');
+        sortObjArray(Employees.entries, sortBy);
+        render(Employees.entries);
+
+        $(".active").removeClass("active");
+        sortBtn.addClass("active");
+    });
+
+    $('.sort-ui .btn').popover({
+        content: function() {return "Click to resort by " + $( this ).html()},
+        trigger: 'hover',
+        placement: 'bottom',
+        holder: 'body'
+    });
+});
+
+function render(entries) {
+    var $template = $(".template");
+    var $holder = $(".address-book");
+    var $repetition;
+    $holder.hide();
+    $holder.empty();
+    $.each(entries, function() {
+        $repetition= $template.clone();
+        $repetition.find('.first').html(this.first);
+        $repetition.find('.last').html(this.last);
+        $repetition.find('.title').html(this.title);
+        $repetition.find('.dept').html(this.dept);
+        $repetition.find('.pic').attr({
+            src: this.pic,
+            alt: 'picture of '+ this.first + " " + this.last
+        });
+        $repetition.removeClass('template');
+        $holder.append($repetition);
+        $holder.fadeIn('slow');
+    });
+}
 
 /* sortObjArray()
     sorts an array of objects by a given property name
@@ -33,4 +72,3 @@ function sortObjArray(objArray, propName) {
             return 1;
     });
 } //sortObjArray()
-
